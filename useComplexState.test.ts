@@ -13,35 +13,93 @@ describe("useComplexState Hook", () => {
     expect(state).toEqual(INITIAL_STATE);
   });
 
-  it("should update state correctly", () => {
-    const NEW_DYNAMIC_STATE = { dynamicValue: 'new value' };
-    const result = setup();
+  describe('partial setter', () => {
+    it("should update state correctly when user passes a value", () => {
+      const NEW_DYNAMIC_STATE = { dynamicValue: 'new value' };
+      const result = setup();
 
-    const [, setState] = result.current;
+      const [, setState] = result.current;
 
-    act(() => {
-      setState('dynamic', NEW_DYNAMIC_STATE);
+      act(() => {
+        setState('dynamic', NEW_DYNAMIC_STATE);
+      });
+
+      expect(result.current[0]).toEqual({
+        static: INITIAL_STATE.static,
+        dynamic: NEW_DYNAMIC_STATE
+      });
     });
 
-    expect(result.current[0]).toEqual({
-      static: INITIAL_STATE.static,
-      dynamic: NEW_DYNAMIC_STATE
+    it("should update state correctly when user passes a callback", () => {
+      const NEW_DYNAMIC_STATE = { dynamicValue: 'new value' };
+      const result = setup();
+
+      const [, setState] = result.current;
+
+      act(() => {
+        setState('dynamic', () => NEW_DYNAMIC_STATE);
+      });
+
+      expect(result.current[0]).toEqual({
+        static: INITIAL_STATE.static,
+        dynamic: NEW_DYNAMIC_STATE
+      });
+    });
+
+    it('should pass the old state to the callback', (completed) => {
+      const NEW_DYNAMIC_STATE = { dynamicValue: 'new value' };
+      const result = setup();
+
+      const [, setState] = result.current;
+
+      act(() => {
+        setState('dynamic', (oldState) => {
+          expect(oldState).toEqual(INITIAL_STATE.dynamic);
+          completed();
+          return NEW_DYNAMIC_STATE;
+        });
+      });
     });
   });
 
-  it('should change completely the state', () => {
+  describe('full setter', () => {
     const UPDATED_STATE = {
       static: { staticValue: 'new static value' },
       dynamic: { dynamicValue: 'new dynamic value' }
     };
-    const result = setup();
+    it('should change completely the state when user passes a value', () => {
+      const result = setup();
+      const [, , forceState] = result.current;
 
-    const [, , forceState] = result.current;
+      act(() => {
+        forceState(UPDATED_STATE);
+      });
 
-    act(() => {
-      forceState(UPDATED_STATE);
+      expect(result.current[0]).toEqual(UPDATED_STATE);
     });
 
-    expect(result.current[0]).toEqual(UPDATED_STATE);
-  })
+    it('should change completely the state when user passes a callback', () => {
+      const result = setup();
+      const [, , forceState] = result.current;
+
+      act(() => {
+        forceState(() => UPDATED_STATE);
+      });
+
+      expect(result.current[0]).toEqual(UPDATED_STATE);
+    });
+
+    it('should pass the old state to the callback', (completed) => {
+      const result = setup();
+      const [, , forceState] = result.current;
+
+      act(() => {
+        forceState((oldState) => {
+          expect(oldState).toBe(INITIAL_STATE);
+          completed();
+          return UPDATED_STATE;
+        });
+      });
+    });
+  });
 });
