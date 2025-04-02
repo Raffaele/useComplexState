@@ -74,7 +74,7 @@ const [state, partialSetter] = useComplexState({
   age: 23,
 });
 
-// After this command the new state.firstName will be "FOO" (upper case)
+// After this instruction the new state.firstName will be "FOO" (upper case)
 partialSetter("firstName", (oldFristName) => {
   // The oldFirstName is "Foo"
   console.log(oldFirstname);
