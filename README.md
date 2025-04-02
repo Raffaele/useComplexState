@@ -1,4 +1,4 @@
-# USE COMPLEX STATE REACT HOOK
+# useComplexState REACT HOOK
 
 ---
 
@@ -65,6 +65,23 @@ function MyComponent() {
   dispatch({type: 'UPDATE_AGE', payload: 32});
 ```
 
+## This hook allow to set values with callbacks
+
+```js
+const [state, partialSetter] = useComplexState({
+  firstName: "Foo",
+  lastName: "Bar",
+  age: 23,
+});
+
+// After this command the new state.firstName will be "FOO" (upper case)
+partialSetter("firstName", (oldFristName) => {
+  // The oldFirstName is "Foo"
+  console.log(oldFirstname);
+  return oldFirstName.toUpperCase();
+});
+```
+
 ## Typescript full support
 
 If using typescript the setter recognizes the keys and the values of the type we are using as visible in the following example.
@@ -83,8 +100,14 @@ setter("nickName", "new name");
 // This will generate a typescript error as the type of fName is a string, not a number
 setter("fName", 23);
 
+// This will generate a typescript error as the callback return type does not match with the type of "fName"
+setter("fName", () => 34);
+
 // This works
 setter("age", 23);
+
+// This works
+setter("age", (oldAge) => oldAge + 1);
 
 // We can force the type of the state:
 
@@ -130,4 +153,12 @@ hardSetter({
   age: 33,
 }
 */
+
+// Hard reset works with callbacks as well
+hardSetter((oldState) => {
+  return {
+    ...oldState,
+    age: oldState.age + 1,
+  };
+});
 ```
