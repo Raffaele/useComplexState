@@ -15,7 +15,7 @@ import useComplexState from "use-complex-state";
 
 function MyComponent() {
   // State initialization
-  const [state, partialSetter, fullSetter] = useComplexState({
+  const [state, partialSetter, hardSetter] = useComplexState({
     fName: 'Foo',
     lName: 'Bar',
     age: 23,
@@ -75,7 +75,7 @@ const [state, partialSetter] = useComplexState({
 });
 
 // After this command the new state.firstName will be "FOO" (upper case)
-partialSetter("firstName", (oldFristName) => {
+partialSetter("firstName", (oldFirstname) => {
   // The oldFirstName is "Foo"
   console.log(oldFirstname);
   return oldFirstName.toUpperCase();
