@@ -33,7 +33,7 @@ function MyComponent() {
 
 We can achieve the same result with less code.
 
-For example, if using `useReducer` to get the same result as the code written before with `useComplexState` we need the following:
+For example, if using `useReducer` to get the same result as the code written before with `useComplexState` we need more boilerplate:
 
 ```js
 import { useReducer } from 'react';
