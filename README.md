@@ -15,7 +15,7 @@ import useComplexState from "use-complex-state";
 
 function MyComponent() {
   // State initialization
-  const [state, partialSetter, hardSetter] = useComplexState({
+  const [state, partialSetter] = useComplexState({
     fName: 'Foo',
     lName: 'Bar',
     age: 23,
@@ -87,20 +87,22 @@ partialSetter("firstName", (oldFirstName) => {
 If using typescript the setter recognizes the keys and the values of the type we are using as visible in the following example.
 
 ```ts
-// The type of the state is {fName: string, lName: string, age: number}
+/* The type of the state is:
+   {fName: string, lName: string, age: number}
+*/
 const [state, setter] = useComplexState({
   fName: "Foo",
   lName: "Bar",
   age: 23,
 });
 
-// This will generate a typescript error as nickName is not a valid key of the state
+// TS error: nickName is not a valid key of the state
 setter("nickName", "new name");
 
-// This will generate a typescript error as the type of fName is a string, not a number
+// TS error: fName's type is string, not number
 setter("fName", 23);
 
-// This will generate a typescript error as the callback return type does not match with the type of "fName"
+// TS error: the callback return type does not match with "fName"
 setter("fName", () => 34);
 
 // This works
@@ -124,23 +126,23 @@ const [typedState, typedSetter] = useComplexState<MyState>({
   age: 23,
 });
 
-// This works as nickName is now a valid key for the state
+// This works: nickName is now a valid key for the state
 typedSetter("nickName", "new name");
 ```
 
 ## Hard reset
 
-The hook returns a 3rd param: a method to update the full value of the state
+The setter can be used to update the full value of the state if the developer does not send the key as first param
 
 ```ts
-const [state, setter, hardSetter] = useComplexState({
+const [state, setter] = useComplexState({
   fName: "Foo",
   lName: "Bar",
   age: 23,
 });
 
-// In typescript the type of the new state must match the one passed in the state initialization
-hardSetter({
+// In TS the type of the new state must match the one passed in the state initialization
+setter({
   fName: "FooAgain",
   lName: "Baz",
   age: 33,
@@ -155,7 +157,7 @@ hardSetter({
 */
 
 // Hard reset works with callbacks as well
-hardSetter((oldState) => {
+setter((oldState) => {
   return {
     ...oldState,
     age: oldState.age + 1,

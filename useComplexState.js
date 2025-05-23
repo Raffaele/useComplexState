@@ -4,20 +4,24 @@ const useComplexState = (initialState) => {
   const [state, setState] = useState(initialState);
 
   const updateState = useCallback(
-    (key, value) => {
+    function (keyOrValue, value) {
+      if (arguments.length === 1) {
+        setState(keyOrValue);
+        return;
+      }
       const valueToSet =
-        typeof value === "function" ? value(state[key]) : value;
+        typeof value === "function" ? value(state[keyOrValue]) : value;
       setState((prevState) => {
         return {
           ...prevState,
-          [key]: valueToSet,
+          [keyOrValue]: valueToSet,
         };
       });
     },
     [setState]
   );
 
-  return [state, updateState, setState];
+  return [state, updateState];
 };
 
 export default useComplexState;

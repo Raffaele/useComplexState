@@ -69,10 +69,10 @@ describe("useComplexState Hook", () => {
     };
     it('should change completely the state when user passes a value', () => {
       const result = setup();
-      const [, , forceState] = result.current;
+      const [, setState] = result.current;
 
       act(() => {
-        forceState(UPDATED_STATE);
+        setState(UPDATED_STATE);
       });
 
       expect(result.current[0]).toEqual(UPDATED_STATE);
@@ -80,10 +80,10 @@ describe("useComplexState Hook", () => {
 
     it('should change completely the state when user passes a callback', () => {
       const result = setup();
-      const [, , forceState] = result.current;
+      const [, setState] = result.current;
 
       act(() => {
-        forceState(() => UPDATED_STATE);
+        setState(() => UPDATED_STATE);
       });
 
       expect(result.current[0]).toEqual(UPDATED_STATE);
@@ -91,10 +91,10 @@ describe("useComplexState Hook", () => {
 
     it('should pass the old state to the callback', (completed) => {
       const result = setup();
-      const [, , forceState] = result.current;
+      const [, setState] = result.current;
 
       act(() => {
-        forceState((oldState) => {
+        setState((oldState) => {
           expect(oldState).toBe(INITIAL_STATE);
           completed();
           return UPDATED_STATE;
